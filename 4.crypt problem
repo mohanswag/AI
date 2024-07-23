@@ -1,0 +1,61 @@
+from itertools import permutations
+
+def solve_crypt_arithmetic(equation: str):
+    """
+    Solves a given crypt-arithmetic equation.
+    
+    :param equation: A string representing the equation, e.g., "SEND + MORE = MONEY"
+    :return: A dictionary mapping letters to digits if a solution is found, otherwise None.
+    """
+    # Extract unique characters from the equation
+    words = equation.replace(' ', '').split('+')
+    words = [word for part in words for word in part.split('=')]
+    
+    unique_chars = set(''.join(words))
+    
+    # Check for non-alphabetical characters
+    if not all(char.isalpha() for char in unique_chars):
+        raise ValueError("The equation must only contain alphabetical letters.")
+
+    # Ensure the equation is valid for solving
+    if len(unique_chars) > 10:
+        raise ValueError("The equation contains more than 10 unique characters, which is not solvable with digits 0-9.")
+
+    # List of letters that can't be zero
+    non_zero_chars = [word[0] for word in words]
+
+    # Possible digit permutations
+    for perm in permutations('0123456789', len(unique_chars)):
+        # Create a mapping of letters to digits
+        char_to_digit = dict(zip(unique_chars, perm))
+        
+        # Check if any non-zero leading character is zero
+        if any(char_to_digit[char] == '0' for char in non_zero_chars):
+            continue
+
+        # Convert words to numbers based on current permutation
+        numbers = [int(''.join(char_to_digit[char] for char in word)) for word in words]
+
+        # Check if the equation holds
+        if sum(numbers[:-1]) == numbers[-1]:
+            return char_to_digit
+
+    return None
+
+def main():
+    # Define the crypt-arithmetic puzzle
+    equation = "SEND + MORE = MONEY"
+    
+    # Solve the puzzle
+    solution = solve_crypt_arithmetic(equation)
+    
+    # Print the result
+    if solution:
+        print("Solution found:")
+        for letter, digit in solution.items():
+            print(f"{letter} = {digit}")
+    else:
+        print("No solution exists.")
+
+if __name__ == '__main__':
+    main()
