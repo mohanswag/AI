@@ -1,0 +1,68 @@
+from collections import deque
+
+class MissionariesCannibalsSolver:
+    def __init__(self):
+        self.start_state = (3, 3, 1)  # (missionaries, cannibals, boat) on the starting side
+        self.goal_state = (0, 0, 0)   # All on the other side
+        self.visited = set()
+
+    def is_valid_state(self, state):
+        missionaries, cannibals, _ = state
+        if missionaries < 0 or cannibals < 0 or missionaries > 3 or cannibals > 3:
+            return False
+        if missionaries < cannibals and missionaries > 0:
+            return False
+        if (3 - missionaries) < (3 - cannibals) and (3 - missionaries) > 0:
+            return False
+        return True
+
+    def get_successors(self, state):
+        successors = []
+        missionaries, cannibals, boat = state
+        if boat == 1:  # Boat on the original side
+            possible_moves = [
+                (missionaries - 2, cannibals, 0),
+                (missionaries - 1, cannibals, 0),
+                (missionaries, cannibals - 2, 0),
+                (missionaries, cannibals - 1, 0),
+                (missionaries - 1, cannibals - 1, 0)
+            ]
+        else:  # Boat on the other side
+            possible_moves = [
+                (missionaries + 2, cannibals, 1),
+                (missionaries + 1, cannibals, 1),
+                (missionaries, cannibals + 2, 1),
+                (missionaries, cannibals + 1, 1),
+                (missionaries + 1, cannibals + 1, 1)
+            ]
+        
+        for move in possible_moves:
+            if self.is_valid_state(move):
+                successors.append(move)
+        
+        return successors
+
+    def bfs(self):
+        queue = deque([(self.start_state, [])])
+        while queue:
+            current_state, path = queue.popleft()
+            if current_state == self.goal_state:
+                return path + [current_state]
+            if current_state in self.visited:
+                continue
+            self.visited.add(current_state)
+            for successor in self.get_successors(current_state):
+                queue.append((successor, path + [current_state]))
+        return None
+
+    def solve(self):
+        solution = self.bfs()
+        if solution:
+            return f"Solution found with {len(solution) - 1} steps:\n" + \
+                   "\n".join(f"Step {i}: {s}" for i, s in enumerate(solution))
+        else:
+            return "No solution exists."
+
+if __name__ == '__main__':
+    solver = MissionariesCannibalsSolver()
+    print(solver.solve())
