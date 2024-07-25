@@ -1,0 +1,47 @@
+% Facts: student(StudentCode, StudentName)
+student(s1, 'Alice').
+student(s2, 'Bob').
+student(s3, 'Charlie').
+student(s4, 'David').
+
+% Facts: teacher(TeacherCode, TeacherName)
+teacher(t1, 'Ms. Smith').
+teacher(t2, 'Mr. Johnson').
+teacher(t3, 'Dr. Brown').
+
+% Facts: subject(SubjectCode, SubjectName)
+subject(sub1, 'Math').
+subject(sub2, 'English').
+subject(sub3, 'Science').
+
+% Facts: student_subject(StudentCode, SubjectCode)
+student_subject(s1, sub1).
+student_subject(s1, sub2).
+student_subject(s2, sub1).
+student_subject(s3, sub3).
+student_subject(s4, sub2).
+student_subject(s4, sub3).
+
+% Facts: teacher_subject(TeacherCode, SubjectCode)
+teacher_subject(t1, sub1).
+teacher_subject(t2, sub2).
+teacher_subject(t3, sub3).
+
+% Rules: Finding student, teacher, subject by their codes
+student_name(StudentCode, StudentName) :-
+    student(StudentCode, StudentName).
+
+teacher_name(TeacherCode, TeacherName) :-
+    teacher(TeacherCode, TeacherName).
+
+subject_name(SubjectCode, SubjectName) :-
+    subject(SubjectCode, SubjectName).
+
+% Rule: Finding subjects taught by a teacher
+teacher_subjects(TeacherCode, SubjectNames) :-
+    findall(SubjectName, (teacher_subject(TeacherCode, SubjectCode), subject_name(SubjectCode, SubjectName)), SubjectNames).
+
+% Example Query:
+% Finding subjects taught by teacher t1
+% ?- teacher_subjects(t1, Subjects).
+% Subjects = ['Math'].
