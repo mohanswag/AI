@@ -1,0 +1,19 @@
+% Facts about planets: planet(Name, Type, Diameter_km, Distance_from_sun_km, Has_CO2)
+planet(mercury, rocky, 4879, 57900000, no).
+planet(venus, rocky, 12104, 108000000, yes).
+planet(earth, rocky, 12756, 150000000, yes).
+planet(mars, rocky, 6787, 227000000, yes).
+planet(jupiter, gas_giant, 139822, 778000000, no).
+planet(saturn, gas_giant, 116464, 1427000000, no).
+planet(uranus, ice_giant, 50724, 2871000000, no).
+planet(neptune, ice_giant, 49244, 4504000000, no).
+
+% Query to find planets with CO2 in their atmosphere
+planets_with_co2(Planet) :-
+    planet(Planet, _, _, _, yes).
+
+% Example query: Finding planets with CO2
+% ?- planets_with_co2(Planet).
+% Planet = venus ;
+% Planet = earth ;
+% Planet = mars.
